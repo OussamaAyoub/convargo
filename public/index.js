@@ -161,11 +161,10 @@ for(var i=0;i<deliveries.length;i++){
     deliveries[i].price=pricePerKm*deliveries[i].distance+pricePerVolume*deliveries[i].volume;
     var deductibleCharge=0;
     if(deliveries[i].options.deductibleReduction==true){deductibleCharge=deliveries[i].volume}
-    deliveries[i].commission.insurance=deliveries[i].price/2
+    var commission=deliveries[i].price*(30/100)
+    deliveries[i].commission.insurance=commission/2
     deliveries[i].commission.treasury=Math.trunc(deliveries[i].distance/500)+1
-    deliveries[i].commission.convargo=deliveries[i].price-deliveries[i].commission.treasury-deliveries[i].commission.insurance-(deliveries[i].price*(30/100))+deductibleCharge;
-    deliveries[i].price=pricePerKm*deliveries[i].distance+pricePerVolume*deliveries[i].volume+deductibleCharge;
-
+    deliveries[i].commission.convargo=commission-deliveries[i].commission.treasury-deliveries[i].commission.insurance+deductibleCharge;
 }
 console.log(truckers);
 console.log(deliveries);
