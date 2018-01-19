@@ -147,9 +147,16 @@ const actors = [{
 function getTrucker(truckerId){
     var currenttrucker=null;
     truckers.forEach(function(trucker){
-    if(trucker.id===deliveries[i].truckerId){ currenttrucker=trucker;}
+    if(trucker.id===truckerId){ currenttrucker=trucker;}
     });
     return currenttrucker;
+}
+function getDelivery(deliveryId){
+    var currentdelivery=null;
+    deliveries.forEach(function(delivery){
+    if(delivery.id==deliveryId){ currentdelivery=delivery;}
+    });
+    return currentdelivery;
 }
 for(var i=0;i<deliveries.length;i++){
     var currenttrucker=getTrucker(deliveries[i].truckerId);
@@ -159,13 +166,21 @@ for(var i=0;i<deliveries.length;i++){
     if(deliveries[i].volume>=10){pricePerVolume=(1-(30/100))*currenttrucker.pricePerVolume}
     if(deliveries[i].volume>=25){pricePerVolume=(1-(50/100))*currenttrucker.pricePerVolume}
     deliveries[i].price=pricePerKm*deliveries[i].distance+pricePerVolume*deliveries[i].volume;
-    var deductibleCharge=0;
-    if(deliveries[i].options.deductibleReduction==true){deductibleCharge=deliveries[i].volume}
     var commission=deliveries[i].price*(30/100)
     deliveries[i].commission.insurance=commission/2
     deliveries[i].commission.treasury=Math.trunc(deliveries[i].distance/500)+1
-    deliveries[i].commission.convargo=commission-deliveries[i].commission.treasury-deliveries[i].commission.insurance+deductibleCharge;
+    deliveries[i].commission.convargo=commission-deliveries[i].commission.treasury-deliveries[i].commission.insurance;
 }
+actors.forEach(function(delivery){
+    var infodelivery=getDelivery(delivery.deliveryId);
+    var deductibleCharge=0;
+    if(infodelivery.options.deductibleReduction==true){deductibleCharge=infodelivery.volume}
+    delivery.payment[0].amount=infodelivery.price+deductibleCharge;
+    delivery.payment[1].amount=infodelivery.price*(1-(30/100));
+    delivery.payment[2].amount=infodelivery.commission.insurance;
+    delivery.payment[3].amount=infodelivery.commission.treasury;
+    delivery.payment[4].amount=infodelivery.commission.convargo+deductibleCharge;
+})
 console.log(truckers);
 console.log(deliveries);
 console.log(actors);
