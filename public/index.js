@@ -153,7 +153,12 @@ function getTrucker(truckerId){
 }
 for(var i=0;i<deliveries.length;i++){
     var currenttrucker=getTrucker(deliveries[i].truckerId);
-    deliveries[i].price=currenttrucker.pricePerKm*deliveries[i].distance+currenttrucker.pricePerVolume*deliveries[i].volume;
+    var pricePerKm=currenttrucker.pricePerKm;
+    var pricePerVolume=currenttrucker.pricePerVolume;
+    if(deliveries[i].volume>=5){pricePerVolume=(1-(10/100))*currenttrucker.pricePerVolume}
+    if(deliveries[i].volume>=10){pricePerVolume=(1-(30/100))*currenttrucker.pricePerVolume}
+    if(deliveries[i].volume>=25){pricePerVolume=(1-(50/100))*currenttrucker.pricePerVolume}
+    deliveries[i].price=pricePerKm*deliveries[i].distance+pricePerVolume*deliveries[i].volume;
 }
 console.log(truckers);
 console.log(deliveries);
